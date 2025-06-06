@@ -1,0 +1,1541 @@
+openapi: 3.0.0
+info:
+  title: BookFellas API
+  description: A simple API of Book Fellas web application.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Panos Lekos
+    email: panaleko@ece.auth.gr
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+# servers:
+# - url: https://virtserver.swaggerhub.com/BILONIO02_1/BookFellas/1.0.0
+#   description: SwaggerHub API Auto Mocking
+paths:
+  /user:
+    get:
+      tags:
+      - user
+      summary: Gets all Users.
+      operationId: userGET
+      responses:
+        "200":
+          description: Returns the Users correctly.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      x-swagger-router-controller: User
+    post:
+      tags:
+      - user
+      summary: Adds a new User to BookFellas along with a new Library
+      operationId: createUser
+      requestBody:
+        description: Create user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        "201":
+          description: Returns the User.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /user/{id}:
+    get:
+      tags:
+      - user
+      summary: Get user by ID
+      description: Retrieve a user's details by their ID
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Returns the User.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+    put:
+      tags:
+      - user
+      summary: Update user by ID
+      description: Update a user's details by their ID
+      operationId: updateUserById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Update the details of an existing user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      responses:
+        "204":
+          description: "User updated, no response"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+    delete:
+      tags:
+      - user
+      summary: Delete user by ID (from BookFellas and Library)
+      description: Delete a user by their ID
+      operationId: deleteUserById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "204":
+          description: "User deleted, no response"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /user/{id}/password:
+    put:
+      tags:
+      - user
+      summary: Update the password of a user
+      description: Update a user's password by Id
+      operationId: updatePassword
+      parameters:
+      - name: id
+        in: path
+        description: ID of user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Update the password of an existent user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePasswordRequest'
+        required: true
+      responses:
+        "204":
+          description: Update the User's password.
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /user/{id}/email:
+    put:
+      tags:
+      - user
+      summary: Update the email of a user
+      description: Update a user's email by Id
+      operationId: updateEmail
+      parameters:
+      - name: id
+        in: path
+        description: ID of user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Update the email of an existent user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailRequest'
+        required: true
+      responses:
+        "200":
+          description: Return the User's email
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /user/login:
+    get:
+      tags:
+      - user
+      summary: Logs user into the system
+      description: Logs user into the system
+      operationId: loginUser
+      parameters:
+      - name: username
+        in: query
+        description: The username for login
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login in clear text
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              style: simple
+              explode: false
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+        "201":
+          description: JWT token created
+        "400":
+          description: Invalid username/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /user/logout:
+    get:
+      tags:
+      - user
+      summary: Logs out current logged in user session
+      description: ""
+      operationId: logoutUser
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+      x-swagger-router-controller: User
+  /user/search:
+    get:
+      tags:
+      - user
+      summary: Search for users
+      description: Search for users based on various parameters
+      operationId: searchUsers
+      parameters:
+      - name: name
+        in: query
+        description: Name of the user to search for
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful search operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+                x-content-type: application/json
+        "400":
+          description: Invalid search criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /book:
+    get:
+      tags:
+      - Book
+      summary: Gets all books.
+      operationId: bookGET
+      responses:
+        "200":
+          description: Returns the Books correctly
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+                x-content-type: application/json
+      x-swagger-router-controller: Book
+    post:
+      tags:
+      - Book
+      summary: Adds a new book to BookFellas
+      operationId: bookPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "201":
+          description: Returns the Book.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "400":
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Book
+  /book/{id}:
+    get:
+      tags:
+      - Book
+      summary: Get a book by ID
+      operationId: bookIdGET
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Returns the Book.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Book
+    put:
+      tags:
+      - Book
+      summary: Update a book by ID
+      operationId: bookIdPUT
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "204":
+          description: "Book updated, no response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Book
+    delete:
+      tags:
+      - Book
+      summary: Delete a book from BookFellas based on it's id.
+      operationId: bookIdDELETE
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "204":
+          description: "Book deleted, no reponse"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Book
+  /book/search:
+    post:
+      tags:
+      - Book
+      summary: Gets all Books based on the search parameters.
+      operationId: bookSearchPOST
+      parameters:
+      - name: Author
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          
+      - name: title
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+         
+      - name: category
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookSearchParams'
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "404":
+          description: Books not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Book
+  /library:
+    get:
+      tags:
+      - Library
+      summary: Get a list of libraries
+      operationId: libraryGET
+      responses:
+        "200":
+          description: Returns the libraries correctly
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Library'
+                x-content-type: application/json
+      x-swagger-router-controller: Library
+  /library/{id}:
+    get:
+      tags:
+      - Library
+      summary: Get a Library by id
+      operationId: libraryIdGET
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Returns the Library
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Library'
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Library
+    put:
+      tags:
+      - Library
+      summary: Update a library by ID
+      operationId: libraryIdPUT
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the library to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Library'
+        required: true
+      responses:
+        "200":
+          description: The updated library
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Library'
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Library
+  /library/{id}/book:
+    get:
+      tags:
+      - Library
+      summary: Get a list of books in a specific library
+      operationId: libraryIdBookGET
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: A list of books in the library
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+                x-content-type: application/json
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Library
+    put:
+      tags:
+      - Library
+      summary: Updates a Library's book list. Use "add" or "remove" operation to update
+        the list.
+      operationId: libraryIdBookPUT
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "204":
+          description: "Library updated, no response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Library
+  /user/{sender_id}/chat:
+    get:
+      tags:
+      - chat
+      summary: List chats for a user
+      description: Retrieve a list of chats for a user by their ID
+      operationId: listChats
+      parameters:
+      - name: sender_id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chat'
+                x-content-type: application/json
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Chat
+    post:
+      tags:
+      - chat
+      summary: Start a new chat
+      description: Start a new chat for a user by their ID
+      operationId: startChat
+      parameters:
+      - name: sender_id
+        in: path
+        description: ID of the user starting the chat
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Details of the new chat
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChatRequest'
+        required: true
+      responses:
+        "201":
+          description: Chat created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Chat
+  /user/{sender_id}/chat/{chat_id}/message:
+    post:
+      tags:
+      - message
+      summary: Send a new message in a chat
+      description: Send a new message in a chat for a user by their ID and chat ID
+      operationId: sendMessage
+      parameters:
+      - name: sender_id
+        in: path
+        description: ID of the user sending the message
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: chat_id
+        in: path
+        description: ID of the chat
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Details of the message to be sent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMessageRequest'
+        required: true
+      responses:
+        "201":
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: Chat or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Message
+  /chat/{id}:
+    get:
+      tags:
+      - chat
+      summary: Get chat by ID
+      description: Retrieve a chat's details by its ID
+      operationId: getChatById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the chat
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        "404":
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Chat
+    put:
+      tags:
+      - chat
+      summary: Update chat by ID
+      description: Update a chat's details by its ID
+      operationId: updateChatById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the chat
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Updated chat details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chat'
+        required: true
+      responses:
+        "200":
+          description: Successful update operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Chat
+  /user/{sender_id}/chat/{chat_id}:
+    get:
+      tags:
+      - chat
+      summary: Get messages in a specific chat
+      description: Retrieve messages in a specific chat identified by sender ID and
+        chat ID
+      operationId: getMessagesInChat
+      parameters:
+      - name: sender_id
+        in: path
+        description: ID of the sender
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: chat_id
+        in: path
+        description: ID of the chat
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+                x-content-type: application/json
+        "404":
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Chat
+    put:
+      tags:
+      - chat
+      summary: Update a message in a specific chat
+      description: Update a message in a specific chat identified by sender ID and
+        chat ID
+      operationId: updateMessageInChat
+      parameters:
+      - name: sender_id
+        in: path
+        description: ID of the sender
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: chat_id
+        in: path
+        description: ID of the chat
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Updated message details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      responses:
+        "200":
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "404":
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Chat
+  /user/{id}/rating:
+    get:
+      tags:
+      - user
+      summary: Get user ratings
+      description: Retrieves the ratings for the user with the given ID
+      operationId: getUserRatings
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rating'
+                x-content-type: application/json
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+    post:
+      tags:
+      - user
+      summary: Add a rating for a user
+      description: Adds a new rating for the user with the given ID
+      operationId: addUserRating
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Rating details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+        required: true
+      responses:
+        "201":
+          description: Rating created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: User
+  /rating/{id}:
+    get:
+      tags:
+      - rating
+      summary: Get rating by ID
+      description: Retrieve a rating's details by its ID
+      operationId: getRatingById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the rating
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        "404":
+          description: Rating not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Rating
+    put:
+      tags:
+      - rating
+      summary: Update rating by ID
+      description: Update a rating's details by its ID
+      operationId: updateRatingById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the rating
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Update the details of an existing rating
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRatingRequest'
+        required: true
+      responses:
+        "200":
+          description: Successful update operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: Rating not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Rating
+    delete:
+      tags:
+      - rating
+      summary: Delete rating by ID
+      description: Delete a rating by its ID
+      operationId: deleteRatingById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the rating
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "204":
+          description: Successful deletion
+        "404":
+          description: Rating not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Rating
+  /likelist/{id}:
+    get:
+      tags:
+      - likelist
+      summary: Get like list by user ID
+      description: Retrieve the like list of the user with the given ID
+      operationId: getLikeListByUserId
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LikeList'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Likelist
+    put:
+      tags:
+      - likelist
+      summary: Update like list by user ID
+      description: Update the like list of the user with the given ID
+      operationId: updateLikeListByUserId
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Update the like list of an existing user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LikeList'
+        required: true
+      responses:
+        "200":
+          description: Successful update operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LikeList'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-swagger-router-controller: Likelist
+components:
+  schemas:
+    User:
+      required:
+      - email
+      - id
+      - userName
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        userName:
+          type: string
+        email:
+          type: string
+      example:
+        id: 0147525875
+        userName: userName
+        email: email
+    CreateUser:
+      required:
+      - confirmPassword
+      - email
+      - password
+      type: object
+      properties:
+        userName:
+          type: string
+          nullable: true
+        password:
+          minLength: 1
+          type: string
+        confirmPassword:
+          minLength: 1
+          type: string
+        email:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    UpdatePasswordRequest:
+      required:
+      - password
+      type: object
+      properties:
+        password:
+          minLength: 8
+          type: string
+          description: The new password for the user
+          format: password
+    UpdateUserRequest:
+      required:
+      - email
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    UpdateEmailRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: The new email for the user
+          format: email
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        publishedDate:
+          type: string
+          format: date
+        isbn:
+          type: string
+      example:
+        author: author
+        isbn: isbn
+        id: 0
+        publishedDate: 2000-01-23
+        title: title
+    BookSearchParams:
+      type: object
+      properties:
+        author:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        category:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+    Library:
+      required:
+      - id
+      - location
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the library
+        name:
+          type: string
+          description: The name of the library
+        location:
+          type: string
+          description: The location of the library
+        established:
+          type: string
+          description: The date the library was established
+          format: date
+        booksCount:
+          type: integer
+          description: The total number of books in the library
+        librarian:
+          type: string
+          description: The name of the head librarian
+      example:
+        established: 2000-01-23
+        name: name
+        librarian: librarian
+        location: location
+        id: 21
+        booksCount: 2
+    Chat:
+      required:
+      - createdAt
+      - id
+      - participants
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        participants:
+          type: array
+          items:
+            type: integer
+            format: int64
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        createdAt:
+          type: string
+          format: date-time
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        messages:
+        - id: 25874
+          sender_id: 6
+          content: content
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        - id: 96325741
+          sender_id: 6
+          content: content
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        id: 47896281
+        participants:
+        - 0
+        - 0
+    NewChatRequest:
+      required:
+      - initial_message
+      - recipient_id
+      type: object
+      properties:
+        recipient_id:
+          type: integer
+          format: int32
+        initial_message:
+          type: string
+    Message:
+      required:
+      - content
+      - id
+      - sender_id
+      - timestamp
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        sender_id:
+          type: integer
+          format: int64
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      example:
+        id: 148624896324896
+        sender_id: 6
+        content: content
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    NewMessageRequest:
+      required:
+      - content
+      type: object
+      properties:
+        content:
+          type: string
+    Rating:
+      required:
+      - comment
+      - createdAt
+      - id
+      - raterID
+      - rating
+      - userId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        raterID:
+          type: integer
+          format: int32
+        rating:
+          maximum: 5
+          minimum: 1
+          type: integer
+          format: int32
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        raterID: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        rating: 1
+        comment: comment
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        userId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+    UpdateRatingRequest:
+      type: object
+      properties:
+        rating:
+          maximum: 5
+          minimum: 1
+          type: integer
+          format: int32
+        comment:
+          type: string
+    LikeList:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        likedBooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+      example:
+        likedBooks:
+        - author: author
+          isbn: isbn
+          id: 0
+          publishedDate: 2000-01-23
+          title: title
+        - author: author
+          isbn: isbn
+          id: 0
+          publishedDate: 2000-01-23
+          title: title
+        id: 14852586
+        userId: 4852586369
